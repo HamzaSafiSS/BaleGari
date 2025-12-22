@@ -42,6 +42,16 @@ To learn more about developing your project with Expo, look at the following res
 - [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
 - [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
 
+## BaleGari UI demo (added)
+
+This workspace includes a mocked UI for a ride-hailing app localized for Ethiopian users. It focuses on lightweight, performance-friendly UI (no backend).
+
+- Screens implemented: Welcome, Phone Login, OTP, Passenger flow (Home, Destination, Finding, Assigned, In-Progress, Completed, Profile), Driver flow (Register, Home, Incoming request, Ride, Earnings).
+- Lightweight components: `components/ui/button.tsx`, `card.tsx`, `input.tsx`, `modal.tsx`, `map-placeholder.tsx`.
+- Localization samples: `locales/en.json`, `locales/am.json`, `locales/om.json` with a helper in `hooks/use-localization.ts`.
+
+Run the app and open `Welcome` from the Home tab or go directly to `/welcome`.
+
 ## Join the community
 
 Join our community of developers creating universal apps.

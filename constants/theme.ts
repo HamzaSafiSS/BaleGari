@@ -51,3 +51,27 @@ export const Fonts = Platform.select({
     mono: "SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace",
   },
 });
+
+// Design tokens for BaleGari UI
+export const Design = {
+  primary: '#0B8A4A', // Ethiopian green - primary action color (trust & mobility)
+  accent: tintColorLight,
+  neutralLight: '#F5F6F8',
+  neutral: '#E6E9EC',
+  danger: '#E53935',
+  success: '#2E7D32',
+  border: '#E3E6E9',
+  radius: {
+    sm: 6,
+    md: 10,
+    lg: 16,
+  },
+  spacing: {
+    xs: 6,
+    sm: 10,
+    md: 16,
+    lg: 24,
+    xl: 32,
+  },
+};
+
