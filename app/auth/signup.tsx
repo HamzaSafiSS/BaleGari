@@ -37,51 +37,42 @@ export default function Signup() {
         setLoading(true);
 
         try {
-            // 1. Sign up with Supabase Auth
+            // 1. Sign up with Supabase Auth (Simplified for troubleshooting)
             const { data: authData, error: authError } = await supabase.auth.signUp({
                 email,
                 password,
             });
 
             if (authError) {
-                Alert.alert('Signup Error', authError.message);
+                console.error('Signup Error:', authError);
+                Alert.alert('Signup Error', `${authError.message} (Code: ${authError.status})`);
                 setLoading(false);
                 return;
             }
 
-            const user = authData.user;
-            const session = authData.session;
+            const { user, session } = authData;
+            console.log('Auth Signup Result:', { user: !!user, session: !!session });
 
             if (user) {
-                // 2. Create profile in public.users table
-                const { error: profileError } = await supabase
-                    .from('users')
-                    .insert({
-                        id: user.id,
-                        email,
-                        full_name: fullName,
-                        phone,
-                        role,
-                    });
+                // TRIGGER OTP EMAIL IMMEDIATELY:
+                // This ensures the user gets their code right away without waiting for resend.
+                console.log('Signup successful, triggering OTP email...');
+                await supabase.auth.signInWithOtp({
+                    email,
+                    options: { shouldCreateUser: false }
+                });
 
-                if (profileError) {
-                    console.error('Profile creation error:', profileError);
+                // FORCE VERIFICATION FLOW:
+                // If the user signed up and got a session (auto-login), we sign them out 
+                // to ensure they must verify their email before they can actually use the app.
+                if (session) {
+                    console.log('Session detected, signing out for verification flow...');
+                    await supabase.auth.signOut();
                 }
 
-                // If email verification is enabled, session will be null
-                if (!session) {
-                    router.replace(`/auth/verify?email=${email}` as any);
-                    return;
-                }
-
-                Alert.alert('Success', 'Account created successfully!');
-
-                // Redirect based on role
-                if (role === 'driver') {
-                    router.replace('/driver/register');
-                } else {
-                    router.replace('/passenger');
-                }
+                // Redirect to OTP screen unconditionally to handle the code from their email
+                router.replace(`/auth/otp?email=${email}&role=${role}` as any);
+                return;
             }
         } catch (err) {
             Alert.alert('Error', 'An unexpected error occurred');

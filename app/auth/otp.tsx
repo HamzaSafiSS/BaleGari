@@ -63,11 +63,23 @@ export default function OTP() {
       const token = otp.join('');
 
       try {
-        const { error, data } = await supabase.auth.verifyOtp({
+        // Try 'signup' verification first (for email/password accounts needing confirmation)
+        let { error, data } = await supabase.auth.verifyOtp({
           email,
           token,
-          type: 'email',
+          type: 'signup',
         });
+
+        // If 'signup' fails (e.g. if the user is already confirmed or using a login OTP), try 'email' type
+        if (error) {
+          const secondAttempt = await supabase.auth.verifyOtp({
+            email,
+            token,
+            type: 'email',
+          });
+          error = secondAttempt.error;
+          data = secondAttempt.data;
+        }
 
         if (error) {
           // For development/demo purposes
@@ -120,8 +132,21 @@ export default function OTP() {
 
   const handleResend = async () => {
     setTimer(59);
-    const { error } = await supabase.auth.signInWithOtp({ email });
-    if (error) Alert.alert('Error', 'Could not resend code');
+    try {
+      const { error } = await supabase.auth.signInWithOtp({
+        email,
+        options: { shouldCreateUser: false }
+      });
+
+      if (error) {
+        console.error('Resend Error:', error);
+        Alert.alert('Resend Error', error.message);
+      } else {
+        Alert.alert('Success', 'Verification code resent!');
+      }
+    } catch (err) {
+      Alert.alert('Error', 'An unexpected error occurred');
+    }
   };
 
   return (
