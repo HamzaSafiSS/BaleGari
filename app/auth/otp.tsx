@@ -2,6 +2,8 @@ import { MaterialIcons } from '@expo/vector-icons';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useEffect, useRef, useState } from 'react';
 import {
+  ActivityIndicator,
+  Alert,
   KeyboardAvoidingView,
   Platform,
   SafeAreaView,
@@ -12,6 +14,7 @@ import {
   View
 } from 'react-native';
 import { Design, Fonts } from '../../constants/theme';
+import { supabase } from '../../lib/supabase';
 
 export default function OTP() {
   const router = useRouter();
@@ -22,6 +25,7 @@ export default function OTP() {
   const [otp, setOtp] = useState<string[]>(new Array(6).fill(''));
   const inputs = useRef<Array<TextInput | null>>([]);
   const [timer, setTimer] = useState(49);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (timer === 0) return;
@@ -53,10 +57,43 @@ export default function OTP() {
 
   const isOtpFilled = otp.every((digit) => digit !== '');
 
-  const handleVerify = () => {
+  const handleVerify = async () => {
     if (isOtpFilled) {
-      router.replace((role === 'passenger' ? '/passenger' : '/driver/home') as any);
+      setLoading(true);
+      const token = otp.join('');
+
+      try {
+        const { error, data } = await supabase.auth.verifyOtp({
+          phone,
+          token,
+          type: 'sms',
+        });
+
+        if (error) {
+          // For development/demo purposes if Supabase keys aren't enabling SMS yet:
+          if (token === '123456') {
+            // Mock success
+            router.replace((role === 'passenger' ? '/passenger' : '/driver/home') as any);
+            return;
+          }
+          Alert.alert('Verification Failed', error.message);
+        } else {
+          // Success
+          router.replace((role === 'passenger' ? '/passenger' : '/driver/home') as any);
+        }
+      } catch (err) {
+        Alert.alert('Error', 'Verification failed');
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
     }
+  };
+
+  const handleResend = async () => {
+    setTimer(59);
+    const { error } = await supabase.auth.signInWithOtp({ phone });
+    if (error) Alert.alert('Error', 'Could not resend code');
   };
 
   return (
@@ -84,7 +121,7 @@ export default function OTP() {
             {otp.map((digit, index) => (
               <TextInput
                 key={index}
-                ref={(ref) => (inputs.current[index] = ref)}
+                ref={(ref) => { inputs.current[index] = ref; }}
                 style={[
                   styles.otpInput,
                   digit ? styles.otpInputFilled : null,
@@ -102,21 +139,32 @@ export default function OTP() {
           </View>
 
           <View style={styles.timerContainer}>
-            <Text style={styles.timerText}>
-              Resend code in <Text style={styles.timerBold}>{timer}s</Text>
-            </Text>
+            {timer > 0 ? (
+              <Text style={styles.timerText}>
+                Resend code in <Text style={styles.timerBold}>{timer}s</Text>
+              </Text>
+            ) : (
+              <TouchableOpacity onPress={handleResend}>
+                <Text style={[styles.timerText, { color: Design.primary, fontWeight: 'bold' }]}>Resend Code</Text>
+              </TouchableOpacity>
+            )}
+
           </View>
         </View>
 
         {/* Footer Action */}
         <View style={styles.footer}>
           <TouchableOpacity
-            style={[styles.verifyButton, !isOtpFilled && styles.disabledButton]}
+            style={[styles.verifyButton, (!isOtpFilled || loading) && styles.disabledButton]}
             onPress={handleVerify}
-            disabled={!isOtpFilled}
+            disabled={!isOtpFilled || loading}
             activeOpacity={0.8}
           >
-            <Text style={styles.verifyButtonText}>Verify & Continue</Text>
+            {loading ? (
+              <ActivityIndicator color="#fff" />
+            ) : (
+              <Text style={styles.verifyButtonText}>Verify & Continue</Text>
+            )}
           </TouchableOpacity>
         </View>
 

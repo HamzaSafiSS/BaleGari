@@ -2,6 +2,8 @@ import { MaterialIcons } from '@expo/vector-icons';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import {
+  ActivityIndicator,
+  Alert,
   KeyboardAvoidingView,
   Platform,
   SafeAreaView,
@@ -12,12 +14,51 @@ import {
   View
 } from 'react-native';
 import { Fonts } from '../../constants/theme';
+import { supabase } from '../../lib/supabase';
 
 export default function PhoneLogin() {
   const router = useRouter();
   const params = useLocalSearchParams();
   const role = (params.role as string) || 'passenger';
   const [phone, setPhone] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  const formatPhoneNumber = (number: string) => {
+    // Basic formatting: ensure it starts with country code if needed
+    // For specific country (ET +251), we can append if missing
+    if (number.startsWith('0')) {
+      return `+251${number.substring(1)}`;
+    }
+    if (!number.startsWith('+')) {
+      return `+251${number}`;
+    }
+    return number;
+  };
+
+  const sendOTP = async () => {
+    setLoading(true);
+    const formattedPhone = formatPhoneNumber(phone);
+
+    try {
+      const { error } = await supabase.auth.signInWithOtp({
+        phone: formattedPhone,
+        // For production, you might want to redirect to a deep link
+        // options: { shouldCreateUser: true }
+      });
+
+      if (error) {
+        Alert.alert('Error', error.message);
+      } else {
+        // Navigate to OTP screen
+        router.push((`/auth/otp?role=${role}&phone=${formattedPhone}` as any));
+      }
+    } catch (err) {
+      Alert.alert('Error', 'Something went wrong. Please try again.');
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -46,7 +87,7 @@ export default function PhoneLogin() {
             </TouchableOpacity>
 
             {/* Phone Number Input */}
-            <View style={styles.phoneInputContainer}>
+            <View style={[styles.phoneInputContainer]}>
               <MaterialIcons name="phone" size={20} color="#999" style={styles.phoneIcon} />
               <TextInput
                 style={styles.phoneInput}
@@ -68,12 +109,16 @@ export default function PhoneLogin() {
         {/* Footer Action */}
         <View style={styles.footer}>
           <TouchableOpacity
-            style={[styles.continueButton, !phone && styles.disabledButton]}
-            onPress={() => router.push((`/auth/otp?role=${role}&phone=${phone}` as any))}
-            disabled={!phone}
+            style={[styles.continueButton, (!phone || loading) && styles.disabledButton]}
+            onPress={sendOTP}
+            disabled={!phone || loading}
             activeOpacity={0.8}
           >
-            <Text style={styles.continueButtonText}>Send Verification Code</Text>
+            {loading ? (
+              <ActivityIndicator color="#fff" />
+            ) : (
+              <Text style={styles.continueButtonText}>Send Verification Code</Text>
+            )}
           </TouchableOpacity>
         </View>
       </KeyboardAvoidingView>
