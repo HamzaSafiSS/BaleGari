@@ -58,7 +58,7 @@ export default function Welcome() {
         <TouchableOpacity
           style={styles.card}
           activeOpacity={0.8}
-          onPress={() => router.push('/driver/register' as any)}
+          onPress={() => router.push('/auth/phone?role=driver' as any)}
         >
           <View style={[styles.iconBox, { backgroundColor: '#FFF8E1' }]}>
             <MaterialIcons name="drive-eta" size={28} color="#F57F17" />

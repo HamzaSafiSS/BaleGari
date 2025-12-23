@@ -72,14 +72,42 @@ export default function OTP() {
         if (error) {
           // For development/demo purposes
           if (token === '123456') {
-            // Mock success
-            router.replace((role === 'passenger' ? '/passenger' : '/driver/home') as any);
+            // Mock bypass - we can't easily check DB here without real session, so maybe just force home for dev
+            // Or better, let's assume we want to test register:
+            if (role === 'driver') {
+              // In dev mock, maybe just go to register to test needed flow?
+              // Or keep simple:
+              router.replace('/driver/home');
+            } else {
+              router.replace('/passenger');
+            }
             return;
           }
           Alert.alert('Verification Failed', error.message);
         } else {
           // Success
-          router.replace((role === 'passenger' ? '/passenger' : '/driver/home') as any);
+          if (role === 'driver') {
+            // Check if driver profile exists
+            const userId = data.user?.id;
+            if (userId) {
+              const { data: driverData, error: driverError } = await supabase
+                .from('drivers')
+                .select('user_id')
+                .eq('user_id', userId)
+                .maybeSingle(); // Use maybeSingle to avoid error on no rows
+
+              if (driverData) {
+                router.replace('/driver/home');
+              } else {
+                router.replace('/driver/register');
+              }
+            } else {
+              // Should verify why no user, but fallback to home or login
+              router.replace('/driver/home');
+            }
+          } else {
+            router.replace('/passenger');
+          }
         }
       } catch (err) {
         Alert.alert('Error', 'Verification failed');
