@@ -5,12 +5,12 @@
 
 import { Platform } from 'react-native';
 
-const tintColorLight = '#0a7ea4';
+const tintColorLight = '#628141';
 const tintColorDark = '#fff';
 
 export const Colors = {
   light: {
-    text: '#11181C',
+    text: '#1B211A',
     background: '#fff',
     tint: tintColorLight,
     icon: '#687076',
@@ -54,12 +54,15 @@ export const Fonts = Platform.select({
 
 // Design tokens for BaleGari UI
 export const Design = {
-  primary: '#0B8A4A', // Ethiopian green - primary action color (trust & mobility)
-  accent: tintColorLight,
+  primary: '#628141',
+  secondary: '#8BAE66',
+  tertiary: '#EBD5AB',
+  dark: '#1B211A',
+  accent: '#EBD5AB',
   neutralLight: '#F5F6F8',
   neutral: '#E6E9EC',
   danger: '#E53935',
-  success: '#2E7D32',
+  success: '#628141', // Use primary green for success too or stick to standard
   border: '#E3E6E9',
   radius: {
     sm: 6,
