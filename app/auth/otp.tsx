@@ -20,7 +20,7 @@ export default function OTP() {
   const router = useRouter();
   const params = useLocalSearchParams();
   const role = (params.role as string) || 'passenger';
-  const phone = (params.phone as string) || '';
+  const email = (params.email as string) || '';
 
   const [otp, setOtp] = useState<string[]>(new Array(6).fill(''));
   const inputs = useRef<Array<TextInput | null>>([]);
@@ -64,13 +64,13 @@ export default function OTP() {
 
       try {
         const { error, data } = await supabase.auth.verifyOtp({
-          phone,
+          email,
           token,
-          type: 'sms',
+          type: 'email',
         });
 
         if (error) {
-          // For development/demo purposes if Supabase keys aren't enabling SMS yet:
+          // For development/demo purposes
           if (token === '123456') {
             // Mock success
             router.replace((role === 'passenger' ? '/passenger' : '/driver/home') as any);
@@ -92,7 +92,7 @@ export default function OTP() {
 
   const handleResend = async () => {
     setTimer(59);
-    const { error } = await supabase.auth.signInWithOtp({ phone });
+    const { error } = await supabase.auth.signInWithOtp({ email });
     if (error) Alert.alert('Error', 'Could not resend code');
   };
 
@@ -110,10 +110,10 @@ export default function OTP() {
         </View>
 
         <View style={styles.content}>
-          <Text style={styles.title}>Verify your number</Text>
+          <Text style={styles.title}>Verify your email</Text>
           <Text style={styles.subtitle}>
             Enter the 6-digit code sent to{'\n'}
-            <Text style={styles.phoneNumber}>{phone || '+251958657458'}</Text>
+            <Text style={styles.emailText}>{email || 'your email'}</Text>
           </Text>
 
           {/* 6-Digit input */}
@@ -209,7 +209,7 @@ const styles = StyleSheet.create({
     lineHeight: 24,
     marginBottom: 32,
   },
-  phoneNumber: {
+  emailText: {
     fontWeight: 'bold',
     color: '#212121',
   },

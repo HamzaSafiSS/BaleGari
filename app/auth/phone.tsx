@@ -16,33 +16,19 @@ import {
 import { Fonts } from '../../constants/theme';
 import { supabase } from '../../lib/supabase';
 
-export default function PhoneLogin() {
+export default function EmailLogin() {
   const router = useRouter();
   const params = useLocalSearchParams();
   const role = (params.role as string) || 'passenger';
-  const [phone, setPhone] = useState('');
+  const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);
-
-  const formatPhoneNumber = (number: string) => {
-    // Basic formatting: ensure it starts with country code if needed
-    // For specific country (ET +251), we can append if missing
-    if (number.startsWith('0')) {
-      return `+251${number.substring(1)}`;
-    }
-    if (!number.startsWith('+')) {
-      return `+251${number}`;
-    }
-    return number;
-  };
 
   const sendOTP = async () => {
     setLoading(true);
-    const formattedPhone = formatPhoneNumber(phone);
 
     try {
       const { error } = await supabase.auth.signInWithOtp({
-        phone: formattedPhone,
-        // For production, you might want to redirect to a deep link
+        email: email,
         // options: { shouldCreateUser: true }
       });
 
@@ -50,7 +36,7 @@ export default function PhoneLogin() {
         Alert.alert('Error', error.message);
       } else {
         // Navigate to OTP screen
-        router.push((`/auth/otp?role=${role}&phone=${formattedPhone}` as any));
+        router.push((`/auth/otp?role=${role}&email=${email}` as any));
       }
     } catch (err) {
       Alert.alert('Error', 'Something went wrong. Please try again.');
@@ -74,44 +60,34 @@ export default function PhoneLogin() {
         </View>
 
         <View style={styles.content}>
-          <Text style={styles.title}>Enter your phone number</Text>
+          <Text style={styles.title}>Enter your email address</Text>
           <Text style={styles.subtitle}>We'll send you a verification code</Text>
 
           {/* Input Section */}
           <View style={styles.inputRow}>
-            {/* Country Code Selector */}
-            <TouchableOpacity style={styles.countrySelector}>
-              <Text style={styles.flag}>🇪🇹</Text>
-              <Text style={styles.countryCode}>+251</Text>
-              <MaterialIcons name="keyboard-arrow-down" size={20} color="#666" />
-            </TouchableOpacity>
-
-            {/* Phone Number Input */}
-            <View style={[styles.phoneInputContainer]}>
-              <MaterialIcons name="phone" size={20} color="#999" style={styles.phoneIcon} />
+            {/* Email Input */}
+            <View style={[styles.emailInputContainer]}>
+              <MaterialIcons name="email" size={20} color="#999" style={styles.icon} />
               <TextInput
-                style={styles.phoneInput}
-                placeholder="912 345 678"
+                style={styles.input}
+                placeholder="name@example.com"
                 placeholderTextColor="#999"
-                keyboardType="phone-pad"
-                value={phone}
-                onChangeText={setPhone}
-                maxLength={10}
+                keyboardType="email-address"
+                autoCapitalize="none"
+                autoCorrect={false}
+                value={email}
+                onChangeText={setEmail}
               />
             </View>
           </View>
-
-          <Text style={styles.disclaimer}>
-            Standard SMS rates may apply. Carrier fees may vary.
-          </Text>
         </View>
 
         {/* Footer Action */}
         <View style={styles.footer}>
           <TouchableOpacity
-            style={[styles.continueButton, (!phone || loading) && styles.disabledButton]}
+            style={[styles.continueButton, (!email || loading) && styles.disabledButton]}
             onPress={sendOTP}
-            disabled={!phone || loading}
+            disabled={!email || loading}
             activeOpacity={0.8}
           >
             {loading ? (
@@ -166,28 +142,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 24,
   },
-  countrySelector: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#F5F5F5',
-    paddingHorizontal: 12,
-    paddingVertical: 14,
-    borderRadius: 16,
-    borderWidth: 1,
-    borderColor: '#EEEEEE',
-    marginRight: 12,
-  },
-  flag: {
-    fontSize: 20,
-    marginRight: 8,
-  },
-  countryCode: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#212121',
-    marginRight: 4,
-  },
-  phoneInputContainer: {
+  emailInputContainer: {
     flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
@@ -198,26 +153,21 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 14,
   },
-  phoneIcon: {
+  icon: {
     marginRight: 12,
   },
-  phoneInput: {
+  input: {
     flex: 1,
     fontSize: 17,
     color: '#111',
     fontWeight: '500',
-    padding: 0, // Reset default padding
-  },
-  disclaimer: {
-    fontSize: 14,
-    color: '#757575',
-    lineHeight: 20,
+    padding: 0,
   },
   footer: {
     paddingVertical: 24,
   },
   continueButton: {
-    backgroundColor: '#86C19F', // Matching the lighter green from screenshot
+    backgroundColor: '#86C19F',
     paddingVertical: 18,
     borderRadius: 16,
     alignItems: 'center',
