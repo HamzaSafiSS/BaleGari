@@ -1,12 +1,31 @@
-import { MaterialIcons } from '@expo/vector-icons';
-import { useRouter } from 'expo-router';
-import React, { useEffect, useState } from 'react';
-import { Dimensions, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { Card } from '../../components/ui/card';
-import { MapPlaceholder } from '../../components/ui/map-placeholder';
-import { Design, Fonts } from '../../constants/theme';
+/**
+ * Incoming Ride Requests Screen
+ *
+ * Responsibilities:
+ * - Display incoming ride requests
+ * - Accept or reject rides
+ *
+ * Supabase (planned):
+ * - Realtime ride request subscription
+ * - Ride accept/reject updates
+ */
 
-const { width } = Dimensions.get('window');
+import { MaterialIcons } from "@expo/vector-icons";
+import { useRouter } from "expo-router";
+import React, { useEffect, useState } from "react";
+import {
+  Dimensions,
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import { Card } from "../../components/ui/card";
+import { MapPlaceholder } from "../../components/ui/map-placeholder";
+import { Design, Fonts } from "../../constants/theme";
+
+const { width } = Dimensions.get("window");
 
 export default function Incoming() {
   const router = useRouter();
@@ -19,7 +38,7 @@ export default function Incoming() {
   }, [timeLeft]);
 
   const handleAccept = () => {
-    router.push('/driver/ride' as any);
+    router.push("/driver/ride" as any);
   };
 
   const handleDecline = () => {
@@ -45,7 +64,7 @@ export default function Incoming() {
         <View style={styles.topBar}>
           <View style={styles.timerPill}>
             <Text style={styles.timerText}>
-              <Text style={{ fontWeight: 'bold' }}>{timeLeft}s</Text> to respond
+              <Text style={{ fontWeight: "bold" }}>{timeLeft}s</Text> to respond
             </Text>
           </View>
           <TouchableOpacity style={styles.closeButton} onPress={handleDecline}>
@@ -60,7 +79,11 @@ export default function Incoming() {
             <View style={styles.cardHeader}>
               <View style={styles.passengerRow}>
                 <View style={styles.avatar}>
-                  <MaterialIcons name="person" size={24} color={Design.primary} />
+                  <MaterialIcons
+                    name="person"
+                    size={24}
+                    color={Design.primary}
+                  />
                 </View>
                 <View>
                   <Text style={styles.passengerName}>Tigist H.</Text>
@@ -83,12 +106,16 @@ export default function Incoming() {
               {/* Pickup */}
               <View style={styles.routeItem}>
                 <View style={styles.timelineContainer}>
-                  <View style={[styles.dot, { backgroundColor: Design.primary }]} />
+                  <View
+                    style={[styles.dot, { backgroundColor: Design.primary }]}
+                  />
                   <View style={styles.line} />
                 </View>
                 <View style={styles.routeTextContainer}>
                   <Text style={styles.routeLabel}>PICKUP</Text>
-                  <Text style={styles.routeAddress}>Bole Road, near Edna Mall</Text>
+                  <Text style={styles.routeAddress}>
+                    Bole Road, near Edna Mall
+                  </Text>
                   <Text style={styles.routeMeta}>3 min away</Text>
                 </View>
               </View>
@@ -96,7 +123,9 @@ export default function Incoming() {
               {/* Dropoff */}
               <View style={styles.routeItem}>
                 <View style={styles.timelineContainer}>
-                  <View style={[styles.dot, { backgroundColor: Design.danger }]} />
+                  <View
+                    style={[styles.dot, { backgroundColor: Design.danger }]}
+                  />
                   {/* No line after dropoff */}
                 </View>
                 <View style={styles.routeTextContainer}>
@@ -112,8 +141,7 @@ export default function Incoming() {
               <TouchableOpacity
                 style={[styles.actionButton, styles.declineButton]}
                 onPress={handleDecline}
-                activeOpacity={0.8}
-              >
+                activeOpacity={0.8}>
                 <Text style={styles.declineText}>Decline</Text>
               </TouchableOpacity>
 
@@ -122,8 +150,7 @@ export default function Incoming() {
               <TouchableOpacity
                 style={[styles.actionButton, styles.acceptButton]}
                 onPress={handleAccept}
-                activeOpacity={0.8}
-              >
+                activeOpacity={0.8}>
                 <Text style={styles.acceptText}>Accept Ride</Text>
               </TouchableOpacity>
             </View>
@@ -137,15 +164,15 @@ export default function Incoming() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
   },
   mapContainer: {
     ...StyleSheet.absoluteFillObject,
   },
   markerContainer: {
-    position: 'absolute',
-    top: '40%',
-    left: '50%',
+    position: "absolute",
+    top: "40%",
+    left: "50%",
     marginLeft: -20,
     marginTop: -20,
   },
@@ -153,52 +180,52 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 20,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     elevation: 5,
-    shadowColor: '#000',
+    shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
     shadowRadius: 4,
   },
   safeArea: {
     flex: 1,
-    justifyContent: 'space-between',
+    justifyContent: "space-between",
   },
   topBar: {
-    flexDirection: 'row',
-    justifyContent: 'center', // Center the timer pill
-    alignItems: 'flex-start',
+    flexDirection: "row",
+    justifyContent: "center", // Center the timer pill
+    alignItems: "flex-start",
     paddingTop: 16,
     paddingHorizontal: 16,
   },
   timerPill: {
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
     paddingHorizontal: 20,
     paddingVertical: 10,
     borderRadius: 24,
     elevation: 4,
-    shadowColor: '#000',
+    shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
   },
   timerText: {
     fontSize: 14,
-    color: '#212121',
+    color: "#212121",
   },
   closeButton: {
-    position: 'absolute',
+    position: "absolute",
     right: 16,
     top: 16,
     width: 40,
     height: 40,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
     borderRadius: 20,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     elevation: 4,
-    shadowColor: '#000',
+    shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
@@ -212,69 +239,69 @@ const styles = StyleSheet.create({
     borderRadius: 24,
   },
   cardHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     marginBottom: 16,
   },
   passengerRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
   },
   avatar: {
     width: 48,
     height: 48,
-    backgroundColor: '#E8F5E9',
+    backgroundColor: "#E8F5E9",
     borderRadius: 24,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     marginRight: 12,
   },
   passengerName: {
     fontSize: 18,
-    fontWeight: 'bold',
-    color: '#212121',
+    fontWeight: "bold",
+    color: "#212121",
     marginBottom: 2,
     fontFamily: Fonts?.sans,
   },
   ratingRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
   },
   ratingText: {
     fontSize: 14,
-    color: '#757575',
+    color: "#757575",
     marginLeft: 4,
   },
   priceContainer: {
-    alignItems: 'flex-end',
+    alignItems: "flex-end",
   },
   priceText: {
     fontSize: 20,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     color: Design.primary,
     marginBottom: 2,
   },
   priceLabel: {
     fontSize: 12,
-    color: '#9E9E9E',
+    color: "#9E9E9E",
   },
   divider: {
     height: 1,
-    backgroundColor: '#F5F5F5',
+    backgroundColor: "#F5F5F5",
     marginBottom: 16,
   },
   routeDetails: {
     marginBottom: 24,
   },
   routeItem: {
-    flexDirection: 'row',
+    flexDirection: "row",
     marginBottom: 0,
     minHeight: 60,
   },
   timelineContainer: {
     width: 24,
-    alignItems: 'center',
+    alignItems: "center",
     marginRight: 12,
   },
   dot: {
@@ -282,14 +309,14 @@ const styles = StyleSheet.create({
     height: 12,
     borderRadius: 6,
     borderWidth: 2,
-    borderColor: '#fff',
+    borderColor: "#fff",
     elevation: 0,
-    shadowColor: '#000',
+    shadowColor: "#000",
   },
   line: {
     width: 2,
     flex: 1,
-    backgroundColor: '#EEEEEE',
+    backgroundColor: "#EEEEEE",
     marginVertical: 4,
   },
   routeTextContainer: {
@@ -297,15 +324,15 @@ const styles = StyleSheet.create({
   },
   routeLabel: {
     fontSize: 10,
-    fontWeight: 'bold',
-    color: '#9E9E9E',
+    fontWeight: "bold",
+    color: "#9E9E9E",
     marginBottom: 4,
     letterSpacing: 0.5,
   },
   routeAddress: {
     fontSize: 15,
-    fontWeight: '500',
-    color: '#212121',
+    fontWeight: "500",
+    color: "#212121",
     marginBottom: 2,
   },
   routeMeta: {
@@ -313,22 +340,22 @@ const styles = StyleSheet.create({
     color: Design.primary,
   },
   actionRow: {
-    flexDirection: 'row',
+    flexDirection: "row",
   },
   actionButton: {
     flex: 1,
     paddingVertical: 16,
     borderRadius: 16,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
   },
   declineButton: {
-    backgroundColor: '#FFEBEE',
+    backgroundColor: "#FFEBEE",
   },
   declineText: {
-    color: '#D32F2F',
+    color: "#D32F2F",
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   acceptButton: {
     backgroundColor: Design.primary,
@@ -339,8 +366,8 @@ const styles = StyleSheet.create({
     elevation: 6,
   },
   acceptText: {
-    color: '#fff',
+    color: "#fff",
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
 });

@@ -1,27 +1,45 @@
-import { MaterialIcons } from '@expo/vector-icons';
-import { useRouter } from 'expo-router';
-import React, { useState } from 'react';
-import { SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { Card } from '../../components/ui/card';
-import { MapPlaceholder } from '../../components/ui/map-placeholder';
-import { Design } from '../../constants/theme';
+/**
+ * Active Ride Screen
+ *
+ * Responsibilities:
+ * - Show current ride details
+ * - Start and end ride flow
+ *
+ * Supabase (planned):
+ * - Ride lifecycle updates
+ * - Live location streaming
+ */
 
-type RideStatus = 'pickup' | 'inprogress';
+import { MaterialIcons } from "@expo/vector-icons";
+import { useRouter } from "expo-router";
+import React, { useState } from "react";
+import {
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import { Card } from "../../components/ui/card";
+import { MapPlaceholder } from "../../components/ui/map-placeholder";
+import { Design } from "../../constants/theme";
+
+type RideStatus = "pickup" | "inprogress";
 
 export default function DriverRide() {
   const router = useRouter();
-  const [status, setStatus] = useState<RideStatus>('pickup');
+  const [status, setStatus] = useState<RideStatus>("pickup");
 
   const handleAction = () => {
-    if (status === 'pickup') {
-      setStatus('inprogress');
+    if (status === "pickup") {
+      setStatus("inprogress");
     } else {
       // Complete trip
-      router.replace('/driver/home' as any);
+      router.replace("/driver/home" as any);
     }
   };
 
-  const isPickup = status === 'pickup';
+  const isPickup = status === "pickup";
 
   return (
     <View style={styles.container}>
@@ -32,14 +50,23 @@ export default function DriverRide() {
         {/* Navigation Markers */}
         <View style={styles.navArrowContainer}>
           <View style={styles.navArrowCircle}>
-            <MaterialIcons name="navigation" size={24} color="#000" style={{ transform: [{ rotate: '45deg' }] }} />
+            <MaterialIcons
+              name="navigation"
+              size={24}
+              color="#000"
+              style={{ transform: [{ rotate: "45deg" }] }}
+            />
           </View>
         </View>
 
         {/* Destination Pin (Simulated position) */}
         {!isPickup && (
-          <View style={{ position: 'absolute', top: '30%', right: '20%' }}>
-            <MaterialIcons name="location-pin" size={40} color={Design.danger} />
+          <View style={{ position: "absolute", top: "30%", right: "20%" }}>
+            <MaterialIcons
+              name="location-pin"
+              size={40}
+              color={Design.danger}
+            />
           </View>
         )}
       </View>
@@ -48,13 +75,18 @@ export default function DriverRide() {
       <View style={styles.topBanner}>
         <SafeAreaView>
           <View style={styles.bannerContent}>
-            <MaterialIcons name="navigation" size={24} color="#fff" style={styles.bannerIcon} />
+            <MaterialIcons
+              name="navigation"
+              size={24}
+              color="#fff"
+              style={styles.bannerIcon}
+            />
             <View>
               <Text style={styles.bannerTitle}>
-                {isPickup ? 'Navigating to pickup' : 'Trip in progress'}
+                {isPickup ? "Navigating to pickup" : "Trip in progress"}
               </Text>
               <Text style={styles.bannerSubtitle}>
-                {isPickup ? '3 min • 1.2 km away' : '12 min • 5.2 km remaining'}
+                {isPickup ? "3 min • 1.2 km away" : "12 min • 5.2 km remaining"}
               </Text>
             </View>
           </View>
@@ -85,20 +117,31 @@ export default function DriverRide() {
                   <MaterialIcons name="call" size={22} color={Design.primary} />
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.contactButton}>
-                  <MaterialIcons name="chat-bubble-outline" size={22} color={Design.primary} />
+                  <MaterialIcons
+                    name="chat-bubble-outline"
+                    size={22}
+                    color={Design.primary}
+                  />
                 </TouchableOpacity>
               </View>
             </View>
 
             {/* Location Details (Dynamic) */}
             <View style={styles.locationContainer}>
-              <View style={[styles.dot, { backgroundColor: isPickup ? Design.primary : Design.danger }]} />
+              <View
+                style={[
+                  styles.dot,
+                  {
+                    backgroundColor: isPickup ? Design.primary : Design.danger,
+                  },
+                ]}
+              />
               <View>
                 <Text style={styles.locationLabel}>
-                  {isPickup ? 'PICKUP LOCATION' : 'DROP-OFF'}
+                  {isPickup ? "PICKUP LOCATION" : "DROP-OFF"}
                 </Text>
                 <Text style={styles.locationAddress}>
-                  {isPickup ? 'Bole Road, near Edna Mall' : 'Meskel Square'}
+                  {isPickup ? "Bole Road, near Edna Mall" : "Meskel Square"}
                 </Text>
               </View>
             </View>
@@ -107,13 +150,11 @@ export default function DriverRide() {
             <TouchableOpacity
               style={[styles.mainButton, !isPickup && styles.completeButton]}
               onPress={handleAction}
-              activeOpacity={0.8}
-            >
+              activeOpacity={0.8}>
               <Text style={styles.mainButtonText}>
-                {isPickup ? "I've Arrived" : 'Complete Trip'}
+                {isPickup ? "I've Arrived" : "Complete Trip"}
               </Text>
             </TouchableOpacity>
-
           </Card>
         </View>
       </SafeAreaView>
@@ -124,27 +165,27 @@ export default function DriverRide() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
   },
   mapContainer: {
     ...StyleSheet.absoluteFillObject,
   },
   navArrowContainer: {
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
+    position: "absolute",
+    top: "50%",
+    left: "50%",
     marginLeft: -24,
     marginTop: -24,
   },
   navArrowCircle: {
     width: 48,
     height: 48,
-    backgroundColor: '#FFC107',
+    backgroundColor: "#FFC107",
     borderRadius: 24,
     borderWidth: 3,
-    borderColor: 'rgba(255, 255, 255, 0.5)',
-    alignItems: 'center',
-    justifyContent: 'center',
+    borderColor: "rgba(255, 255, 255, 0.5)",
+    alignItems: "center",
+    justifyContent: "center",
     elevation: 4,
   },
   topBanner: {
@@ -152,14 +193,14 @@ const styles = StyleSheet.create({
     paddingTop: 8, // Simulate status bar height padding if safe area doesn't handle fully
     paddingBottom: 16,
     elevation: 4,
-    shadowColor: '#000',
+    shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
   },
   bannerContent: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     paddingHorizontal: 16,
     paddingVertical: 8,
   },
@@ -167,20 +208,20 @@ const styles = StyleSheet.create({
     marginRight: 12,
   },
   bannerTitle: {
-    color: '#fff',
+    color: "#fff",
     fontSize: 14,
     opacity: 0.9,
     marginBottom: 2,
   },
   bannerSubtitle: {
-    color: '#fff',
+    color: "#fff",
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   bottomSafeArea: {
     flex: 1,
-    justifyContent: 'flex-end',
-    pointerEvents: 'box-none', // Allow touches to pass through empty areas to map
+    justifyContent: "flex-end",
+    pointerEvents: "box-none", // Allow touches to pass through empty areas to map
   },
   bottomContainer: {
     padding: 16,
@@ -197,59 +238,59 @@ const styles = StyleSheet.create({
   dragHandle: {
     width: 32,
     height: 4,
-    backgroundColor: '#E0E0E0',
+    backgroundColor: "#E0E0E0",
     borderRadius: 2,
-    alignSelf: 'center',
+    alignSelf: "center",
     marginBottom: 16,
   },
   passengerHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     marginBottom: 24,
   },
   passengerInfo: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
   },
   avatar: {
     width: 48,
     height: 48,
-    backgroundColor: '#F5F5F5',
+    backgroundColor: "#F5F5F5",
     borderRadius: 24,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     marginRight: 12,
     borderWidth: 1,
-    borderColor: '#EEEEEE',
+    borderColor: "#EEEEEE",
   },
   passengerName: {
     fontSize: 18,
-    fontWeight: 'bold',
-    color: '#212121',
+    fontWeight: "bold",
+    color: "#212121",
     marginBottom: 2,
   },
   passengerRole: {
     fontSize: 14,
-    color: '#757575',
+    color: "#757575",
   },
   contactActions: {
-    flexDirection: 'row',
+    flexDirection: "row",
   },
   contactButton: {
     width: 44,
     height: 44,
     borderWidth: 1,
-    borderColor: '#EEEEEE',
+    borderColor: "#EEEEEE",
     borderRadius: 12,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     marginLeft: 12,
   },
   locationContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#FAF9F6', // Light beige/gray bg
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#FAF9F6", // Light beige/gray bg
     padding: 16,
     borderRadius: 12,
     marginBottom: 24,
@@ -262,22 +303,22 @@ const styles = StyleSheet.create({
   },
   locationLabel: {
     fontSize: 10,
-    fontWeight: 'bold',
-    color: '#9E9E9E',
+    fontWeight: "bold",
+    color: "#9E9E9E",
     marginBottom: 4,
     letterSpacing: 0.5,
   },
   locationAddress: {
     fontSize: 15,
-    fontWeight: '500',
-    color: '#212121',
+    fontWeight: "500",
+    color: "#212121",
   },
   mainButton: {
     backgroundColor: Design.primary,
     paddingVertical: 18,
     borderRadius: 16,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     shadowColor: Design.primary,
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
@@ -289,8 +330,8 @@ const styles = StyleSheet.create({
     shadowColor: Design.danger,
   },
   mainButtonText: {
-    color: '#fff',
+    color: "#fff",
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
 });
