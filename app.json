@@ -24,7 +24,12 @@
         "googleMaps": {
           "apiKey": ""
         }
-      }
+      },
+      "permissions": [
+        "android.permission.ACCESS_COARSE_LOCATION",
+        "android.permission.ACCESS_FINE_LOCATION"
+      ],
+      "package": "com.hamouzie.BaleGari"
     },
     "web": {
       "output": "static",
@@ -55,6 +60,12 @@
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "054aa649-71a0-427d-8428-60cdb5927bd2"
+      }
     }
   }
 }
