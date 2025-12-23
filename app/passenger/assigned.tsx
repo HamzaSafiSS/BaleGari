@@ -126,7 +126,7 @@ export default function Assigned() {
 
               <TouchableOpacity
                 style={styles.confirmButton}
-                onPress={() => router.push('/passenger/completed' as any)}
+                onPress={() => router.push('/passenger/ride' as any)}
               >
                 <Text style={styles.confirmButtonText}>Confirm</Text>
               </TouchableOpacity>

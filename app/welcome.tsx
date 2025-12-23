@@ -41,7 +41,7 @@ export default function Welcome() {
         <TouchableOpacity
           style={styles.card}
           activeOpacity={0.8}
-          onPress={() => router.push('/auth/phone?role=passenger' as any)}
+          onPress={() => router.push('/auth/login?role=passenger' as any)}
         >
           <View style={[styles.iconBox, { backgroundColor: '#E0F2F1' }]}>
             <MaterialIcons name="person" size={28} color={Design.primary} />
@@ -58,7 +58,7 @@ export default function Welcome() {
         <TouchableOpacity
           style={styles.card}
           activeOpacity={0.8}
-          onPress={() => router.push('/auth/phone?role=driver' as any)}
+          onPress={() => router.push('/auth/login?role=driver' as any)}
         >
           <View style={[styles.iconBox, { backgroundColor: '#FFF8E1' }]}>
             <MaterialIcons name="drive-eta" size={28} color="#F57F17" />
